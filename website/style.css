@@ -1,0 +1,79 @@
+/* Main aspect */
+
+body{
+    /*background: url("https://cdn.discordapp.com/attachments/534100515190079518/790392140442238976/unknown.png") no-repeat center;*/
+}
+
+.container{
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 17px;
+}
+
+H2, H1, H3{
+    font-weight: bold;
+    text-align: center;
+}
+h1{
+    font-size: 30px;
+}
+h2{
+    font-size: 26px;
+}
+h3{
+    font-size: 22px;
+}
+p{
+    text-align: center;
+    font-size: 25px;
+}
+#right{
+    text-align: right;
+}
+
+/* Colors */
+
+#color1{
+    color: #2fe6a3;
+}
+#color2{
+    color: hsl(263, 75%, 36%);
+}
+#color3{
+    color: rgb(168, 0, 0);
+}
+#color4{
+    color: #3e96d16c;
+}
+#color5{
+    color: hsla(54, 100%, 43%, 0.774);
+}
+#color6{
+    color: rgba(0, 189, 0, 0.835);
+}
+
+#bgcolor1{
+    background-color: #00bbd5;
+}
+#bgcolor2{
+    background-color: rgba(15, 255, 128, 0.7);
+}
+#bgcolor3{
+    background-color: aliceblue;
+}
+#bgcolor4{
+    background-color: hsla(100, 50%, 50%, 0.5);
+}
+#bgcolor5{
+    background-color: #ff00f0;
+}
+
+/* Grid */
+
+.grid1{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}

@@ -1,0 +1,20 @@
+diff --git a/node_modules/cssjson/cssjson.js b/node_modules/cssjson/cssjson.js
+index e30c35d..f57d908 100644
+--- a/node_modules/cssjson/cssjson.js
++++ b/node_modules/cssjson/cssjson.js
+@@ -111,6 +111,7 @@
+                 cssString = cssString.replace(commentX, '');
+             }
+ 
++            let abort = 0;
+             while ((match = altX.exec(cssString)) != null) {
+                 if (!isEmpty(match[capComment]) && args.comments) {
+                     // Comment
+@@ -139,6 +140,7 @@
+                         for (i in bits) {
+                             var sel = bits[i].trim();
+                             if (sel in node.children) {
++                                if (abort++ > 5) throw '';
+                                 for (var att in newNode.attributes) {
+                                     node.children[sel].attributes[att] = newNode.attributes[att];
+                                 }

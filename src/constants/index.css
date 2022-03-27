@@ -1,0 +1,370 @@
+/* WARNING: THESE ARE DEFAULT HTML PRESETS, DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING. ACTUALLY, EVEN IF YOU KNOW WHAT YOU ARE DOING, YOU SHOULD PROBABLY NOT CHANGE THESE. */
+* {
+	display: inline;
+	user-select: text;
+}
+
+inline {
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+	display: inline;
+}
+
+body {
+	word-wrap: break-word;
+	display: block;
+	margin: 8px;
+}
+
+/*bold*/
+strong {
+	font-weight: bold;
+}
+
+b{
+	font-weight: bold;
+}
+
+/*italic*/
+address {
+	font-style: italic;
+}
+
+cite{
+	font-style: italic;
+}
+
+dfn{
+	font-style: italic;
+}
+
+em {
+	font-style: italic;
+}
+
+i {
+	font-style: italic;
+}
+
+/*inline display*/
+map {
+	display: inline;
+}
+
+span {
+	display: inline;
+}
+
+abbr{
+	display: inline;
+}
+
+/*block display*/
+section {
+	display: block;
+}
+
+address {
+	display: block;
+}
+
+nav {
+	display: block;
+}
+
+footer {
+	display: block;
+}
+
+html {
+	display: block;
+}
+
+div {
+	display: block;
+}
+
+article {
+	display: block;
+}
+
+blockquote {
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 40px;
+	margin-right: 40px;
+}
+
+/*headers*/
+h1 {
+	display: block;
+	font-size: 2em;
+	/*margin-block-start: 0.67em;*/
+	/*margin-block-end: 0.67em;*/
+	margin-inline-start: 0;
+	margin-inline-end: 0;
+	/* margin-top: 0.67em;
+	margin-bottom: 0.67em;
+	margin-left: 0;
+	margin-right: 0; */
+	font-weight: bold;
+}
+
+h2 {
+	display: block;
+	font-size: 1.5em;
+	margin-top: 0.83em;
+	margin-bottom: 0.83em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+h3 {
+	display: block;
+	font-size: 1.17em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+h4 {
+	display: block;
+	font-size: 1em;
+	margin-top: 1.33em;
+	margin-bottom: 1.33em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+h5 {
+	display: block;
+	font-size: .83em;
+	margin-top: 1.67em;
+	margin-bottom: 1.67em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+h6 {
+	display: block;
+	font-size: .67em;
+	margin-top: 2.33em;
+	margin-bottom: 2.33em;
+	margin-left: 0;
+	margin-right: 0;
+	font-weight: bold;
+}
+
+/*table*/
+
+/*text decorations*/
+small {
+	font-size: smaller;
+}
+
+mark {
+	background-color: yellow;
+	color: black;
+}
+
+strike {
+	text-decoration: line-through;
+}
+
+sup {
+	vertical-align: super;
+	font-size: smaller;
+}
+
+sub {
+	vertical-align: sub;
+	font-size: smaller;
+}
+
+s {
+	text-decoration: line-through;
+}
+
+del {
+	text-decoration: line-through;
+}
+
+code {
+	font-family: monospace;
+}
+
+samp {
+	font-family: monospace;
+}
+
+kbd {
+	font-family: monospace;
+}
+
+bdo {
+	unicode-bidi: bidi-override;
+}
+
+u {
+	text-decoration: underline;
+}
+
+ins {
+	text-decoration: underline;
+}
+
+p {
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+}
+/*table*/
+table {
+	display: table;
+	border-collapse: separate;
+	border-spacing: 2px;
+	border-color: gray;
+}
+
+tbody {
+	display: table-row-group;
+	vertical-align: middle;
+	border-color: inherit;
+}
+
+thead {
+	display: table-header-group;
+	vertical-align: middle;
+	border-color: inherit;
+}
+
+th {
+	display: table-cell;
+	vertical-align: inherit;
+	font-weight: bold;
+	text-align: center;
+}
+
+td {
+	display: table-cell;
+	vertical-align: inherit;
+}
+
+tr {
+	display: table-row;
+	vertical-align: inherit;
+	border-color: inherit;
+}
+
+tfoot {
+	display: table-footer-group;
+	vertical-align: middle;
+	border-color: inherit;
+}
+
+caption {
+	display: table-caption;
+	text-align: center;
+}
+
+col {
+	display: table-column;
+}
+
+colgroup {
+	display: table-column-group;
+}
+
+/*unsorted list*/
+ul {
+	display: block;
+	list-style-type: disc;
+	margin-top: 1em;
+	margin-bottom: 1 em;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 40px;
+}
+
+/*list item*/
+li {
+	display: list-item;
+}
+
+/*ordered list*/
+ol {
+	display: block;
+	list-style-type: decimal;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 40px;
+}
+
+/*horizontal rule*/
+hr {
+	display: block;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: auto;
+	margin-right: auto;
+	border-style: inset;
+	border-width: 1px;
+}
+
+
+/*url*/
+a {
+	display: inline;
+	color: #215df6;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/*description list.*/
+dl {
+	display: block;
+	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+dd {
+	display: block;
+	margin-left: 40px;
+}
+
+dt {
+	display: block;
+}
+
+/*label*/
+label {
+	cursor: default;
+}
+
+/*legend*/
+legend {
+	display: block;
+	padding-left: 2px;
+	padding-right: 2px;
+	border: none;
+}
+
+pre {
+	display: block;
+	font-family: monospace;
+	white-space: pre;
+	margin: 1em 0;
+}

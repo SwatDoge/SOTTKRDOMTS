@@ -1,0 +1,36 @@
+{
+    "head": {
+        "support": [
+            "title",
+            "style",
+            "link"
+        ],
+        "planned_support": [
+            "script"
+        ]
+    },
+    "body": {
+        "support": {
+
+        },
+        "planned": {
+
+        }
+    },
+    "attributes": {
+        "support": {
+
+        },
+        "planned": {
+
+        }
+    },
+    "pseudo": {
+        "support": {
+
+        },
+        "planned": {
+            
+        }
+    }
+}
