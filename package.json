@@ -1,7 +1,7 @@
 {
-	"name": "SOTTKRDOM",
-	"version": "0.1",
-	"description": "Convert CSS/HTML into KrunkScript interfaces",
+	"name": "sottkrdom",
+	"version": "0.1.0",
+	"description": "Convert CSS/HTML into flat KrunkScript dom",
 	"main": "./src/index.js",
 	"author": "Swat",
 	"license": "DQ",
