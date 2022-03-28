@@ -3,7 +3,7 @@ An NPM tool that allows you to convert HTML/CSS into a flat krunker dom, which c
 
 # Env & contributing
 1. Pull this project
-2. Create a new branch based on `main`
+2. Create a new branch based on `master`
 3. Update project:
 ```
 yarn
@@ -14,7 +14,7 @@ yarn load (only needed once)
 yarn try
 ```
 - When done, it will copy a krunker object to your clipboard. You can make your own interpeter in krunkscript or use the one in `./krunkscript/client.krnk`. Load this into a krunker map and you should get a website.
-5. Merge `main` into branch again, then make a pull request. You can unload the module with `yarn unload`.
+5. Merge `master` into branch again, then make a pull request. You can unload the module with `yarn unload`.
 
 
 # Example conversion:
