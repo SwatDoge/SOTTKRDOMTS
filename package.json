@@ -20,13 +20,12 @@
 		"load": "npm install -g",
 		"try": "npx tsc && cd .\\website\\ && krdom",
 		"fast": "cd cd .\\website\\ && krdom",
-		"postinstall": "patch-package"
+		"prepare": "patch-package"
 	},
 	"devDependencies": {
 		"@types/node": "^17.0.21",
 		"npm-dts": "^1.3.11",
 		"patch-package": "^6.4.7",
-		"postinstall-postinstall": "^2.1.0",
 		"typescript": "^4.5.5"
 	},
 	"dependencies": {
