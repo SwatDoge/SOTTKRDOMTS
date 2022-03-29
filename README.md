@@ -2,7 +2,7 @@
 An NPM tool that allows you to convert HTML/CSS into a flat krunker dom, which can then be parsed by krunkscript. This tool is still under heavy development, and can't do much yet.
 
 # Env & contributing
-1. Pull this project
+1. Pull this project.
 2. Create a new branch based on `master`
 3. Update project:
 ```
