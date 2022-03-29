@@ -159,7 +159,7 @@ yarn try
 | classes, tags & ids              |✅                             |✅      |
 | all CSS keywords                 |✅                             |✅      |
 | <br>
-| fonts                            |✅                             |❌      |
-| background-images                |✅                             |❌      |
-| selectors                        |✅                             |❌      |
-| pseudo classes                   |✅                             |❌      |
+| fonts                            |❌                             |✅      |
+| background-images                |❌                             |✅      |
+| selectors                        |❌                             |✅      |
+| pseudo classes                   |❌                             |✅      |
