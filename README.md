@@ -34,13 +34,13 @@ yarn try
 | \<div>                           |✅                             |✅      |
 | \<style>                         |✅                             |✅      |
 | \<title>                         |✅                             |✅      |
-| \<script>                        |✅                             |❌      |
-| \<a>                             |✅                             |❌      |
-| \<br>                            |✅                             |❌      |
-| \<iframe> (styling only)         |✅                             |❌      |
-| \<img>                           |✅                             |❌      |
-| \<input>                         |✅                             |❌      |
-| \<template>                      |✅                             |❌      |
+| \<script>                        |❌                             |✅      |
+| \<a>                             |❌                             |✅      |
+| \<br>                            |❌                             |✅      |
+| \<iframe> (styling only)         |❌                             |✅      |
+| \<img>                           |❌                             |✅      |
+| \<input>                         |❌                             |✅      |
+| \<template>                      |❌                             |✅      |
 | <br>
 | \<abbr>                          |✅                             |✅      |
 | \<address>                       |✅                             |✅      |
@@ -159,7 +159,7 @@ yarn try
 | classes, tags & ids              |✅                             |✅      |
 | all CSS keywords                 |✅                             |✅      |
 | <br>
-| fonts                            |❌                             |✅      |
-| background-images                |❌                             |✅      |
-| selectors                        |❌                             |✅      |
-| pseudo classes                   |❌                             |✅      |
+| fonts                            |✅                             |❌      |
+| background-images                |✅                             |❌      |
+| selectors                        |✅                             |❌      |
+| pseudo classes                   |✅                             |❌      |
