@@ -1,6 +1,6 @@
 {
-	"name": "sottkrdom",
-	"version": "0.1.0",
+	"name": "@swatdoge/sottkrdom",
+	"version": "0.1.2",
 	"description": "Convert CSS/HTML into flat KrunkScript dom",
 	"main": "./src/index.js",
 	"author": "Swat",
@@ -9,6 +9,12 @@
 		"krunker",
 		"krunkscript"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/SwatDoge/SOTTKRDOMTS"
+	},"publishConfig": {
+		"registry": "https://npm.pkg.github.com/swatdoge"
+	},
 	"scripts": {
 		"unload": "npm uninstall -g --save",
 		"load": "npm install -g",
