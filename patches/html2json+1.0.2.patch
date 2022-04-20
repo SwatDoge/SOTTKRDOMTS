@@ -1,0 +1,19 @@
+diff --git a/node_modules/html2json/src/html2json.js b/node_modules/html2json/src/html2json.js
+index ce86a91..6f598a6 100644
+--- a/node_modules/html2json/src/html2json.js
++++ b/node_modules/html2json/src/html2json.js
+@@ -36,12 +36,9 @@
+           node.attr = attrs.reduce(function(pre, attr) {
+             var name = attr.name;
+             var value = attr.value;
++            let reg = new RegExp(/file:\/\/\/(\S+)/g);
+ 
+-            // has multi attibutes
+-            // make it array of attribute
+-            if (value.match(/ /)) {
+-              value = value.split(' ');
+-            }
++            [value] = [...reg.exec(value) ?? [], ...value.replace(reg, "").split(" ")];
+ 
+             // if attr already exists
+             // merge it

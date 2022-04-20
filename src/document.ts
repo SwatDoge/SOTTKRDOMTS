@@ -3,9 +3,10 @@ import {html2json as html_to_json} from "html2json";
 import {toJSON as css_to_json} from "cssjson";
 import path from "path";
 import sott_console from "./utils/console";
-import * as clipboard from "copy-paste"
+import shared_resources_type from "./shared_resources"
 
-import create_krdom_element from "./element"
+//import create_krdom_element from "./elements/element"
+import create_krdom_element from "./elements/element_builder"
 import create_krdom_text_element from "./elements/text_element"
 
 import IKRDom_element, * as IKRDom from "./interfaces/krdom";
@@ -16,62 +17,101 @@ export default class document {
     cwd: string;
     file_path: string;
     argv: string[];
+    is_index: boolean;
 
     title: string;
     style: IStyleSheet[];
-    anchors: string[]
-    
+    anchors: string[];
 
-    constructor(cwd: string, file_path: string, argv: string[]) {
+    shared_resources: shared_resources_type;
+
+    constructor(cwd: string, file_path: string, argv: string[], shared_resources, is_index = false) {
         this.cwd = cwd;
         this.file_path = file_path;
         this.argv = argv;
+        this.is_index = is_index;
+
+        this.shared_resources = shared_resources;
         
         this.style = [this.import_css(path.join(global.src, "./constants/index.css"))];
     }
 
-    parse() {
+    parse(): IKRDom.IKRDom_document_element[] {
+        const document_array = [];
         const file_content = fs.readFileSync(this.file_path, {encoding: "utf8"});
         const parsed_document = this.document_parse(this.html_parse(file_content));
 
         if (parsed_document.body){
-            clipboard.copy(this.strip_krdom_element(this.recussive_build(parsed_document.body, "SOTT_CANVAS")), () => {});
+            document_array.push({
+                id: this.shared_resources.resource("document", this.file_path, true).refer,
+                type: "document",
+                shown: this.is_index,
+                title: this.title,
+                data: {
+                    content: this.recussive_build(parsed_document.body, "SOTT_CANVAS")
+                } as IKRDom.document_data,
+            });
+            
+            let resource_documents = Array.from(this.shared_resources.resources.get("document"));
+            while (resource_documents.some(resource => !resource[1].loaded)) {
+                let unloaded_documents = resource_documents.filter(resource => !resource[1].loaded);
+               // for (let unloaded_document of unloaded_documents) {
+                let new_document = new document(this.cwd, unloaded_documents[0][0], this.argv, this.shared_resources, false).parse();
+                document_array.push(...new_document);
+               // }
+                resource_documents = Array.from(this.shared_resources.resources.get("document"));
+            }
+            return document_array;
         }
+        return [];
     }
 
-    strip_krdom_element(build: IKRDom_element[]){
-        return "obj" + JSON.stringify(build)
+    /**
+     * 
+     * @param {IKRDom.IKRDom_document_element[]} build 
+     * @returns 
+     */
+    static strip_krdom_element(build: IKRDom.IKRDom_document_element[]): string{
+        return JSON.stringify(build)
         //replace dashes
+        .replace(/\[/g, "obj[")
         .replace(/-/g, "_20")
         .replace(/'/g, "\\'")
         //remove stringified object keys
-        .replace(/"(\w+)":/gi, "$1:") + ";"
+        .replace(/"(\w+)":/gi, "$1:") + ";";
         //remove newlines,tabs and excessive spaces
-        //.replace(/^[\n\r\t\s]+$/gmi, "");;
+        //.replace(/^[\n\r\t\s]+$/gmi, "") ;
     }
 
-    recussive_build(element: IHTMLJSON, parent: string): IKRDom_element[] {
+    /**
+     * @param {IHTMLJSON} element 
+     * @param {string} parent 
+     * @returns 
+     */
+    recussive_build(element: IHTMLJSON, parent: string, clickable: boolean = true): IKRDom_element[] {
         let node_array: IKRDom_element[] = [];
         let inline_style = this.parse_inline_css(element?.attr?.style ?? "");
+        if (!clickable) {
+            inline_style = Object.assign(inline_style, {"pointer-events": "none"});
+        }
 
         if (element.node == "element" || element.node == "text"){
             if (element.node == "text") {
                 element.tag = "inline";
-                const krdom_element: IKRDom_element = new create_krdom_text_element(element, parent, this.style, inline_style, element.text);
+                const krdom_element: IKRDom_element = new create_krdom_text_element(element, this.shared_resources, this.file_path, parent, this.style, inline_style, element.text);
                 node_array.push(krdom_element);
             }
             
             if (element.node == "element"){
-                const krdom_element: IKRDom_element = new create_krdom_element(element, parent, this.style, inline_style);
+                const krdom_element: IKRDom_element = create_krdom_element(element, this.shared_resources, this.file_path, parent, this.style, inline_style);
                 
                 node_array.push(krdom_element);
                 if (element.child?.length > 0){
                     for (const child of element.child) {
-                        node_array.push(...this.recussive_build(child, krdom_element.id));
+                        node_array.push(...this.recussive_build(child, krdom_element.id, krdom_element.clickable_children ?? clickable));
                     }
                 }
             }
-
             return node_array;
         }
         else if (element.node == "root"){
@@ -81,6 +121,11 @@ export default class document {
         return node_array;
     }
 
+    /**
+     * Parse css in string format
+     * @param {string} inline_css 
+     * @returns 
+     */
     parse_inline_css(inline_css: string | string[]): IStyleSheet{
         
         let css = typeof inline_css == "string" ? inline_css : inline_css.join("");
@@ -178,12 +223,12 @@ export default class document {
             
             let inline_style = 0;
             for (const child of head.child){
-                if (child.tag == "style" && child.node == "element" && child?.child?.[0]?.node == "text"){
+                if (child.tag == "style" && child.node == "element" && child?.child?.[0]?.node == "text") {
                     inline_style++;
                     this.style.push(this.parse_css(child.child[0].text, `<inline styling #${inline_style}>`));
                 }
-                else if (child.tag == "link", child.node == "element" && child?.attr?.rel == "stylesheet" && child?.attr?.href){
-                    this.style.push(this.import_css(child?.attr?.href))
+                else if (child.tag == "link", child.node == "element" && child?.attr?.rel == "stylesheet" && child?.attr?.href) {
+                    this.style.push(this.import_css(child?.attr?.href));
                 }
             }
         }
@@ -219,9 +264,8 @@ export default class document {
      */
     parse_css(json_css: string, path: string, attributes: boolean = false): IStyleSheet{
         let content: ICSSJSON;
-
         try {
-            content = css_to_json(json_css.replace(/\s*/g, "").replace(/\/\*(.*?)\*\//g, ""));
+            content = css_to_json(json_css.replace(/\s{2,}|\n|\r/g, "").replace(/\/\*(.*?)\*\//g, ""));
         }
         catch {
             sott_console.warning(`Failed to parse stylesheet into styling ${path} in ${this.file_path}, ignoring file`);
@@ -239,8 +283,6 @@ export default class document {
                 css_object[entry[0]] = entry[1].attributes;
             }
         }
-
-
 
         return css_object;
     }

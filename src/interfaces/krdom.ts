@@ -3,12 +3,20 @@ import {IStyleSheet} from "./parsing"
 export type data_types = text_data | anchor_data | image_data | document_data;
 export type element_type = "element" | "text" | "anchor" | "document";
 
-export default interface IKRDom_element{
+export default interface IKRDom_element {
     id: string;
     parent: string;
     type: element_type;
     style: IStyleSheet;
+    clickable_children?: boolean;
     data?: data_types;
+}
+
+export interface IKRDom_document_element {
+    id: string;
+    type: element_type;
+    data?: data_types;
+    shown: boolean;
 }
 
 export interface text_data {
@@ -16,7 +24,7 @@ export interface text_data {
 }
 
 export interface anchor_data {
-    href: string;
+    refer: string;
 }
 
 export interface image_data {
@@ -26,5 +34,5 @@ export interface image_data {
 }
 
 export interface document_data {
-    title?: string;
+    content?: IKRDom_element[];
 }
