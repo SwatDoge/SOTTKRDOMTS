@@ -101,14 +101,14 @@ blockquote {
 h1 {
 	display: block;
 	font-size: 2em;
-	/*margin-block-start: 0.67em;*/
-	/*margin-block-end: 0.67em;*/
+	margin-block-start: 0.67em;
+	margin-block-end: 0.67em;
 	margin-inline-start: 0;
 	margin-inline-end: 0;
-	/* margin-top: 0.67em;
+	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 	margin-left: 0;
-	margin-right: 0; */
+	margin-right: 0;
 	font-weight: bold;
 }
 

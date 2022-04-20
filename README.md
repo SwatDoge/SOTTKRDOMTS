@@ -34,8 +34,8 @@ yarn try
 | \<div>                           |✅                             |✅      |
 | \<style>                         |✅                             |✅      |
 | \<title>                         |✅                             |✅      |
+| \<a>                             |✅                             |✅      |
 | \<script>                        |❌                             |✅      |
-| \<a>                             |❌                             |✅      |
 | \<br>                            |❌                             |✅      |
 | \<iframe> (styling only)         |❌                             |✅      |
 | \<img>                           |❌                             |✅      |

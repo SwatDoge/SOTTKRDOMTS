@@ -19,7 +19,7 @@
 		"unload": "npm uninstall -g --save",
 		"load": "npm install -g",
 		"try": "npx tsc && cd .\\website\\ && krdom",
-		"fast": "cd cd .\\website\\ && krdom",
+		"fast": "cd .\\website\\ && krdom",
 		"prepare": "patch-package"
 	},
 	"devDependencies": {

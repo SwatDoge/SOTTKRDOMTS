@@ -1,6 +1,8 @@
-import IKRDom_element, * as IKRDom from "./interfaces/krdom";
-import {IHTMLJSON, IHTMLJSON_atributes, IStyleSheet} from "./interfaces/parsing";
-import { randomUUID } from 'crypto'
+import IKRDom_element, * as IKRDom from "../interfaces/krdom";
+import {IHTMLJSON, IHTMLJSON_atributes, IStyleSheet} from "../interfaces/parsing";
+import { randomUUID } from "crypto";
+import fs from "fs";
+import shared_resources from "../shared_resources";
 
 export default class element {
     public type: IKRDom.element_type = "element";
@@ -9,7 +11,15 @@ export default class element {
     public style: IStyleSheet;
     public data: IKRDom.data_types;
 
-    constructor(_element: IHTMLJSON, parent: string, stylesheets: IStyleSheet[], inline_style: IStyleSheet) {
+    /**
+     * Creates an element
+     * @param _element 
+     * @param shared_resources 
+     * @param parent 
+     * @param stylesheets 
+     * @param inline_style 
+     */
+    constructor(_element: IHTMLJSON, shared_resources: shared_resources, file_path: string,  parent: string, stylesheets: IStyleSheet[], inline_style: IStyleSheet) {
         this.parent = parent;
         this.id = element.generate_name(_element?.tag ?? "div") as string;
         this.style = this.generate_element_style(_element, stylesheets, inline_style);
@@ -24,8 +34,8 @@ export default class element {
             new RegExp(`(^|(.*)\\,\\s?)${_element.tag}(\\,\\s?(.*)|$|\\s*\\{)`, "gmi"),    //tag selector
         ];
 
-        const classes = this.get_attribute(_element.attr, "class").map(x => "." + x).join("|");
-        const ids = this.get_attribute(_element.attr, "id").map(x => "." + x).join("|");
+        const classes = element.get_attribute(_element.attr, "class").map(x => "." + x).join("|");
+        const ids = element.get_attribute(_element.attr, "id").map(x => "." + x).join("|");
 
         if (classes.length > 0) selector_patterns.push(new RegExp(`(^|(.*)\\,\\s?)(${classes})(\\,\\s?(.*)|$|\\s*\\{)`, "gmi"));   //class selector
         if (ids.length > 0) selector_patterns.push(new RegExp(`(^|(.*)\\,\\s?)(${ids})(\\,\\s?(.*)|$|\\s*\\{)`, "gmi"));           //id selector
@@ -43,7 +53,7 @@ export default class element {
         return style as IStyleSheet;
     }
 
-    get_attribute(_element: IHTMLJSON_atributes, key: string): string[]{
+    static get_attribute(_element: IHTMLJSON_atributes, key: string): string[]{
         if (!_element?.[key]) return [];
         return typeof _element[key] == "string" ? [_element[key]] : _element[key] as string[];
     }

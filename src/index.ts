@@ -4,8 +4,10 @@ import path from "path";
 import process from "process";
 import sott_console from "./utils/console";
 import file_validator from "./utils/directory_utils";
+import * as clipboard from "copy-paste"
+import shared_resources from "./shared_resources"
 
-import html_parser from "./document";
+import document_loader from "./document";
 
 //#region
 Object["objectAssign"] = function(target: object, ...args: object[]): object{
@@ -46,6 +48,5 @@ else {
     sott_console.error("No entry file found");
 }
 
-const init_document = new html_parser(cwd, entry, argv);
-
-const parsed_documents = init_document.parse();
+const resources = new shared_resources();
+clipboard.copy(document_loader.strip_krdom_element(new document_loader(cwd, entry, argv, resources, true).parse()), () => {});
