@@ -3,7 +3,7 @@ import element from "./elements/element";
 export default class resources {
     public resources = new Map<string, Map<string, resource>>();
 
-    constructor(){
+    constructor() {
         this.resources.set("document", new Map<string, resource>());
     }
 
@@ -15,17 +15,17 @@ export default class resources {
      * @returns {resource}
      */
     resource(type: string, absolute_path_name: string, loaded = false, fallback_href: string = null): resource {
-        if (!this.resources.has(type)){
+        if (!this.resources.has(type)) {
             console.error("Illegal type \"" + type + "\" in shared resources. This is a programming mistake, and must be reported to a developer.");
         }
 
         const resource_map = this.resources.get(type);
 
-        if (!resource_map.has(absolute_path_name)){
-            resource_map.set(absolute_path_name, {refer: fallback_href ?? element.generate_name("document"), loaded: false});
+        if (!resource_map.has(absolute_path_name)) {
+            resource_map.set(absolute_path_name, { refer: fallback_href ?? element.generate_name("document"), loaded: false });
         }
 
-        if (loaded){
+        if (loaded) {
             resource_map.get(absolute_path_name).loaded = true;
         }
 

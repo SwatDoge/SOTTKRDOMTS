@@ -1,16 +1,17 @@
 import fs from "fs";
-import {html2json as html_to_json} from "html2json";
-import {toJSON as css_to_json} from "cssjson";
+import { html2json as html_to_json } from "html2json";
+import { toJSON as css_to_json } from "cssjson";
 import path from "path";
 import sott_console from "./utils/console";
-import shared_resources_type from "./shared_resources"
+import shared_resources_type from "./shared_resources";
+import element from "./elements/element";
 
 //import create_krdom_element from "./elements/element"
 import create_krdom_element from "./elements/element_builder"
 import create_krdom_text_element from "./elements/text_element"
 
 import IKRDom_element, * as IKRDom from "./interfaces/krdom";
-import {IStyleSheet, IHTMLJSON, ICSSJSON, IParsedDocument} from "./interfaces/parsing"
+import { IStyleSheet, IHTMLJSON, ICSSJSON, IParsedDocument, IHeadlessSheet } from "./interfaces/parsing"
 
 export default class document {
 
@@ -32,16 +33,16 @@ export default class document {
         this.is_index = is_index;
 
         this.shared_resources = shared_resources;
-        
+
         this.style = [this.import_css(path.join(global.src, "./constants/index.css"))];
     }
 
     parse(): IKRDom.IKRDom_document_element[] {
         const document_array = [];
-        const file_content = fs.readFileSync(this.file_path, {encoding: "utf8"});
+        const file_content = fs.readFileSync(this.file_path, { encoding: "utf8" });
         const parsed_document = this.document_parse(this.html_parse(file_content));
 
-        if (parsed_document.body){
+        if (parsed_document.body) {
             document_array.push({
                 id: this.shared_resources.resource("document", this.file_path, true).refer,
                 type: "document",
@@ -51,14 +52,12 @@ export default class document {
                     content: this.recussive_build(parsed_document.body, "SOTT_CANVAS")
                 } as IKRDom.document_data,
             });
-            
+
             let resource_documents = Array.from(this.shared_resources.resources.get("document"));
             while (resource_documents.some(resource => !resource[1].loaded)) {
                 let unloaded_documents = resource_documents.filter(resource => !resource[1].loaded);
-               // for (let unloaded_document of unloaded_documents) {
                 let new_document = new document(this.cwd, unloaded_documents[0][0], this.argv, this.shared_resources, false).parse();
                 document_array.push(...new_document);
-               // }
                 resource_documents = Array.from(this.shared_resources.resources.get("document"));
             }
             return document_array;
@@ -71,16 +70,22 @@ export default class document {
      * @param {IKRDom.IKRDom_document_element[]} build 
      * @returns 
      */
-    static strip_krdom_element(build: IKRDom.IKRDom_document_element[]): string{
-        return JSON.stringify(build)
-        //replace dashes
-        .replace(/\[/g, "obj[")
-        .replace(/-/g, "_20")
-        .replace(/'/g, "\\'")
-        //remove stringified object keys
-        .replace(/"(\w+)":/gi, "$1:") + ";";
-        //remove newlines,tabs and excessive spaces
-        //.replace(/^[\n\r\t\s]+$/gmi, "") ;
+    static strip_krdom_element(build: IKRDom.IKRDom_document_element[]): string {
+        const string_array = ["dom_class", "dom_id"];
+        const object_array = ["data", "content"];
+
+        return "obj" + JSON.stringify(build)
+            //string arrays
+            .replace(new RegExp(`(\\"(${string_array.join("|")})\\":)\\[`, "g"), "$1str[")
+
+            //object arrays
+            .replace(new RegExp(`(\\"(${object_array.join("|")})\\":)\\[`, "g"), "$1obj[")
+
+            .replace(/-/g, "_20")
+            .replace(/'/g, "\\'")
+
+            //remove stringified object keys
+            .replace(/"(\w+)":/gi, "$1:") + ";";
     }
 
     /**
@@ -92,21 +97,21 @@ export default class document {
         let node_array: IKRDom_element[] = [];
         let inline_style = this.parse_inline_css(element?.attr?.style ?? "");
         if (!clickable) {
-            inline_style = Object.assign(inline_style, {"pointer-events": "none"});
+            inline_style = Object.assign(inline_style, { "pointer-events": "none" });
         }
 
-        if (element.node == "element" || element.node == "text"){
+        if (element.node == "element" || element.node == "text") {
             if (element.node == "text") {
                 element.tag = "inline";
                 const krdom_element: IKRDom_element = new create_krdom_text_element(element, this.shared_resources, this.file_path, parent, this.style, inline_style, element.text);
                 node_array.push(krdom_element);
             }
-            
-            if (element.node == "element"){
+
+            if (element.node == "element") {
                 const krdom_element: IKRDom_element = create_krdom_element(element, this.shared_resources, this.file_path, parent, this.style, inline_style);
-                
+
                 node_array.push(krdom_element);
-                if (element.child?.length > 0){
+                if (element.child?.length > 0) {
                     for (const child of element.child) {
                         node_array.push(...this.recussive_build(child, krdom_element.id, krdom_element.clickable_children ?? clickable));
                     }
@@ -114,7 +119,7 @@ export default class document {
             }
             return node_array;
         }
-        else if (element.node == "root"){
+        else if (element.node == "root") {
             sott_console.error("Unexpected root, please contact Swat#7165 on discord if you get this error");
         }
 
@@ -126,12 +131,25 @@ export default class document {
      * @param {string} inline_css 
      * @returns 
      */
-    parse_inline_css(inline_css: string | string[]): IStyleSheet{
-        
+    parse_inline_css(inline_css: string | string[]): IHeadlessSheet {
         let css = typeof inline_css == "string" ? inline_css : inline_css.join("");
-        return this.parse_css("{" + css + "}", "<inline element styling>", true);
+        let content: IHeadlessSheet = {};
+        try {
+            const attributes = css.replace(/;/gm, "").split(":");
+            if (attributes.length % 2 === 0) {
+                for (let index = 0; index < attributes.length; index += 2) {
+                    content[attributes[index]] = attributes[index + 1];
+
+                }
+            }
+        }
+        catch {
+            sott_console.warning(`Failed to parse stylesheet into styling <inline element styling> in ${this.file_path}, ignoring file`);
+        }
+
+        return content;
     }
-    
+
     /**
      * Parse HTML string into JSON
      * @param {string} content
@@ -140,14 +158,14 @@ export default class document {
     html_parse(content: string): IHTMLJSON {
         const safe_content: string = content.replace(/<!(.*)>/gi, "");
         let parsed_content: object = null;
-        
-        if (safe_content != content){
+
+        if (safe_content != content) {
             sott_console.warning(`Try to avoid the DOCTYPE tag, HTML comments, or other <!> tags. They get automatically filtered, but could possibly lead to issues`)
         }
 
         try {
             parsed_content = html_to_json(safe_content);
-        } 
+        }
         catch (e) {
             sott_console.error(`Could not parse HTML at "${this.file_path}". Make sure to stick to HTML standards while writing, check error for further debugging, or contact Swat#7165 on discord`, e);
         }
@@ -165,7 +183,7 @@ export default class document {
         const html_elements = root_elements.filter(child => child.tag == "html");
         let body_elements = root_elements.filter(child => child.tag == "body");
         let head_elements = root_elements.filter(child => child.tag == "head");
-        
+
         let body: IHTMLJSON;
         let head: IHTMLJSON;
         let html: IHTMLJSON;
@@ -187,7 +205,7 @@ export default class document {
                 sott_console.info(`Did not find any initial body tags, unable to import body (${this.file_path})`);
             }
 
-            if (!body && !head){
+            if (!body && !head) {
                 sott_console.warning(`File ${this.file_path} does not stick to standard html structure, and was unable to import anything`);
             }
         }
@@ -197,43 +215,43 @@ export default class document {
             body_elements = html.child.filter(child => child.tag == "body");
             head_elements = html.child.filter(child => child.tag == "head");
 
-            if (head_elements.length <= 0){
+            if (head_elements.length <= 0) {
                 sott_console.info(`Did not find any head tags, unable to import head (${this.file_path})`);
             }
             else {
                 head = this.merge_tags(head_elements, "head");
             }
 
-            if (body_elements.length <= 0){
+            if (body_elements.length <= 0) {
                 sott_console.info(`Did not find any body tags, unable to import body (${this.file_path})`);
             }
             else {
                 body = this.merge_tags(body_elements, "body");
             }
 
-            if (!body && !head){
+            if (!body && !head) {
                 sott_console.warning(`File ${this.file_path} does not stick to standard html structure, and was unable to import anything`);
             }
         }
 
         //Get title and stylings from head tag.
-        if (Object.keys(head).length > 0){
+        if (Object.keys(head).length > 0) {
             //nice and compact one liner to get the last title
             this.title = head.child.filter(child => child.tag == "title").map(child => child.child.filter(node => node.node == "text")).filter(titles => titles.at(-1))?.at(-1)?.at(-1)?.text ?? "My website";
-            
+
             let inline_style = 0;
-            for (const child of head.child){
+            for (const child of head.child) {
                 if (child.tag == "style" && child.node == "element" && child?.child?.[0]?.node == "text") {
                     inline_style++;
                     this.style.push(this.parse_css(child.child[0].text, `<inline styling #${inline_style}>`));
                 }
                 else if (child.tag == "link", child.node == "element" && child?.attr?.rel == "stylesheet" && child?.attr?.href) {
-                    this.style.push(this.import_css(child?.attr?.href));
+                    this.style.push(...element.get_attribute(child?.attr, "href").map(x => this.import_css(x)));
                 }
             }
         }
 
-        let parsed_document: IParsedDocument = {head, body}
+        let parsed_document: IParsedDocument = { head, body }
         return parsed_document;
     }
 
@@ -242,11 +260,11 @@ export default class document {
      * @param {string} css_path 
      * @returns {IStyleSheet}
      */
-    import_css(css_path: string): IStyleSheet{
+    import_css(css_path: string): IStyleSheet {
         let content: string;
 
         try {
-            content = fs.readFileSync(css_path, {encoding: "utf-8"});
+            content = fs.readFileSync(css_path, { encoding: "utf-8" });
         }
         catch (e) {
             sott_console.warning(`Failed to read stylesheet ${css_path} in ${this.file_path}, ignoring file`);
@@ -262,7 +280,7 @@ export default class document {
      * @param {string} path 
      * @returns {IStyleSheet}
      */
-    parse_css(json_css: string, path: string, attributes: boolean = false): IStyleSheet{
+    parse_css(json_css: string, path: string, attributes: boolean = false): IStyleSheet {
         let content: ICSSJSON;
         try {
             content = css_to_json(json_css.replace(/\s{2,}|\n|\r/g, "").replace(/\/\*(.*?)\*\//g, ""));
@@ -273,13 +291,13 @@ export default class document {
         }
         let css_object = {} as IStyleSheet;
 
-        if (attributes){
-            for (const entry of Object.entries(content.attributes)){
+        if (attributes) {
+            for (const entry of Object.entries(content.attributes)) {
                 css_object[entry[0]] = entry[1];
             }
         }
         else {
-            for (const entry of Object.entries(content.children)){
+            for (const entry of Object.entries(content.children)) {
                 css_object[entry[0]] = entry[1].attributes;
             }
         }

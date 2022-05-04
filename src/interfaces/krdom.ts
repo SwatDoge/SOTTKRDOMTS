@@ -1,4 +1,4 @@
-import {IStyleSheet} from "./parsing"
+import { IStyleSheet } from "./parsing"
 
 export type data_types = text_data | anchor_data | image_data | document_data;
 export type element_type = "element" | "text" | "anchor" | "document";
@@ -10,6 +10,9 @@ export default interface IKRDom_element {
     style: IStyleSheet;
     clickable_children?: boolean;
     data?: data_types;
+
+    dom_id?: string[];
+    dom_class?: string[];
 }
 
 export interface IKRDom_document_element {

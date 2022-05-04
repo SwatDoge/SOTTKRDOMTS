@@ -1,17 +1,17 @@
-export interface IParsedDocument{
+export interface IParsedDocument {
     head?: IHTMLJSON;
     body?: IHTMLJSON;
 }
 
-export interface IHTMLJSON_atributes{
+export interface IHTMLJSON_atributes {
     class?: string | string[];
     id?: string | string[];
     style?: string | string[];
-    href?: string;
+    href?: string[];
     rel?: string;
 }
 
-export interface IHTMLJSON{
+export interface IHTMLJSON {
     node: "root" | "text" | "element";
     child?: IHTMLJSON[];
     attr?: IHTMLJSON_atributes;
@@ -19,11 +19,15 @@ export interface IHTMLJSON{
     tag?: string;
 }
 
-export interface ICSSJSON{
+export interface ICSSJSON {
     children: object;
     attributes: ICSSJSON;
 }
 
-export interface IStyleSheet{
+export interface IStyleSheet {
     [key: string]: object;
+}
+
+export interface IHeadlessSheet {
+    [key: string]: string;
 }
