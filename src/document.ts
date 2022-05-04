@@ -4,7 +4,7 @@ import { toJSON as css_to_json } from "cssjson";
 import path from "path";
 import sott_console from "./utils/console";
 import shared_resources_type from "./shared_resources";
-import element from "./elements/element";
+import _element from "./elements/element";
 
 //import create_krdom_element from "./elements/element"
 import create_krdom_element from "./elements/element_builder"
@@ -95,7 +95,7 @@ export default class document {
      */
     recussive_build(element: IHTMLJSON, parent: string, clickable: boolean = true): IKRDom_element[] {
         let node_array: IKRDom_element[] = [];
-        let inline_style = this.parse_inline_css(element?.attr?.style ?? "");
+        let inline_style = this.parse_inline_css(_element.get_attribute(element?.attr, "style") ?? []);
         if (!clickable) {
             inline_style = Object.assign(inline_style, { "pointer-events": "none" });
         }
@@ -131,15 +131,15 @@ export default class document {
      * @param {string} inline_css 
      * @returns 
      */
-    parse_inline_css(inline_css: string | string[]): IHeadlessSheet {
-        let css = typeof inline_css == "string" ? inline_css : inline_css.join("");
+    parse_inline_css(inline_css: string[]): IHeadlessSheet {
+        let css = inline_css.join("");
         let content: IHeadlessSheet = {};
         try {
-            const attributes = css.replace(/;/gm, "").split(":");
+            const attributes = css.replace(/;$/, "").split(/;|:/);
+            console.log(attributes);
             if (attributes.length % 2 === 0) {
                 for (let index = 0; index < attributes.length; index += 2) {
                     content[attributes[index]] = attributes[index + 1];
-
                 }
             }
         }
@@ -246,7 +246,7 @@ export default class document {
                     this.style.push(this.parse_css(child.child[0].text, `<inline styling #${inline_style}>`));
                 }
                 else if (child.tag == "link", child.node == "element" && child?.attr?.rel == "stylesheet" && child?.attr?.href) {
-                    this.style.push(...element.get_attribute(child?.attr, "href").map(x => this.import_css(x)));
+                    this.style.push(..._element.get_attribute(child?.attr, "href").map(x => this.import_css(x)));
                 }
             }
         }
