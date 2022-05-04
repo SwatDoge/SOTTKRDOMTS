@@ -10,11 +10,11 @@ import shared_resources from "./shared_resources"
 import document_loader from "./document";
 
 //#region
-Object["objectAssign"] = function(target: object, ...args: object[]): object{
+Object["objectAssign"] = function (target: object, ...args: object[]): object {
     let dummy = target ?? {};
     for (const obj of args) {
         for (const [key, value] of Object.entries(obj)) {
-            if (typeof value == "object"){
+            if (typeof value == "object") {
                 dummy[key] = Object["objectAssign"](dummy[key], value);
             }
             else {
@@ -37,7 +37,7 @@ const cwd: string = process.cwd();
 
 const entry: string = file_validator.find_entry(cwd, "index.html", 4);
 
-if (fs.existsSync(entry)) { 
+if (fs.existsSync(entry)) {
     sott_console.success("Found entry file " + entry);
 
     if (entry != path.join(cwd, "index.html")) {
@@ -49,4 +49,4 @@ else {
 }
 
 const resources = new shared_resources();
-clipboard.copy(document_loader.strip_krdom_element(new document_loader(cwd, entry, argv, resources, true).parse()), () => {});
+clipboard.copy(document_loader.strip_krdom_element(new document_loader(cwd, entry, argv, resources, true).parse()), () => { });
